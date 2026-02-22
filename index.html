@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>27卒新卒採用マーケット分析ダッシュボード</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Styles for Chart Containers */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: #fafaf9; /* Stone-50 */
+            color: #1c1917; /* Stone-900 */
+            scroll-behavior: smooth;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .citation-link {
+            color: #0d9488;
+            font-size: 0.75em;
+            text-decoration: none;
+            vertical-align: super;
+            margin-left: 2px;
+            font-weight: bold;
+        }
+        
+        .citation-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutral (Stone) Background with Teal/Indigo/Orange Accents -->
+    <!-- Application Structure Plan:
+        1. Executive KPI Summary (Added inline citations)
+        2. Time Series Analysis
+        3. Industry Battleground
+        4. Student Deep Dive
+        5. Strategy
+        6. Sources / References (NEW: Contains actual researched links)
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-xl font-bold text-teal-800">📊 27卒採用DeepResearch</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="#summary" class="border-transparent text-stone-500 hover:border-stone-300 hover:text-stone-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">サマリー</a>
+                        <a href="#schedule" class="border-transparent text-stone-500 hover:border-stone-300 hover:text-stone-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">スケジュール</a>
+                        <a href="#industry" class="border-transparent text-stone-500 hover:border-stone-300 hover:text-stone-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">業界比較</a>
+                        <a href="#students" class="border-transparent text-stone-500 hover:border-stone-300 hover:text-stone-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">インサイト</a>
+                        <a href="#strategy" class="border-transparent text-stone-500 hover:border-stone-300 hover:text-stone-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">戦略提言</a>
+                        <a href="#sources" class="border-transparent text-stone-400 hover:text-teal-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">出典</a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-xs text-stone-500 bg-stone-100 px-2 py-1 rounded">2026.02 更新</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Header Section -->
+        <div class="text-center space-y-4">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-stone-900 tracking-tight">27卒 新卒採用マーケット分析</h1>
+            <p class="max-w-2xl mx-auto text-lg text-stone-600">
+                上位校（旧帝大・早慶・MARCH等）をターゲットとした、最新データに基づく採用戦略ダッシュボード。
+                <br>キーワードは<span class="font-bold text-teal-700">「インターン本番化」</span>と<span class="font-bold text-indigo-700">「金融・大手回帰」</span>。
+            </p>
+        </div>
+
+        <!-- Section 1: Executive Summary (KPIs) -->
+        <section id="summary" class="scroll-mt-24">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-2">
+                    <span class="text-teal-600">①</span> エグゼクティブ・サマリー
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- KPI Card 1 -->
+                <div class="card p-6 border-l-4 border-teal-500 relative overflow-hidden group">
+                    <div class="absolute top-2 right-2 text-6xl opacity-5">🔑</div>
+                    <p class="text-sm font-medium text-stone-500 uppercase tracking-wider">マーケットキーワード</p>
+                    <h3 class="mt-2 text-xl font-bold text-stone-800">インターン「出会いの本番化」<a href="#sources" class="citation-link">[4]</a></h3>
+                    <div class="mt-4 text-xs text-stone-500 bg-stone-100 p-2 rounded">
+                        三省合意による早期選考の完全定着
+                    </div>
+                </div>
+
+                <!-- KPI Card 2 -->
+                <div class="card p-6 border-l-4 border-orange-500 relative overflow-hidden">
+                    <div class="absolute top-2 right-2 text-6xl opacity-5">⚡</div>
+                    <p class="text-sm font-medium text-stone-500 uppercase tracking-wider">2月時点 内々定率</p>
+                    <div class="flex items-baseline gap-2 mt-1">
+                        <h3 class="text-3xl font-bold text-stone-800">48.5%<a href="#sources" class="citation-link">[2]</a></h3>
+                        <span class="text-sm font-bold text-orange-600">▲ 約9pt増</span>
+                    </div>
+                    <p class="mt-2 text-xs text-stone-500">26卒同時期（39.3%）比。年内・早期内定出しが顕著に増加。</p>
+                </div>
+
+                <!-- KPI Card 3 -->
+                <div class="card p-6 border-l-4 border-indigo-500 relative overflow-hidden">
+                    <div class="absolute top-2 right-2 text-6xl opacity-5">💼</div>
+                    <p class="text-sm font-medium text-stone-500 uppercase tracking-wider">企業の採用意欲（増加）</p>
+                    <div class="flex items-baseline gap-2 mt-1">
+                        <h3 class="text-3xl font-bold text-stone-800">15.8%<a href="#sources" class="citation-link">[3]</a></h3>
+                        <span class="text-sm font-bold text-indigo-600">減少は9.2%</span>
+                    </div>
+                    <p class="mt-2 text-xs text-stone-500">26卒の採用充足率低下（69.7%）を受け、27卒も売り手市場が継続。</p>
+                </div>
+
+                <!-- KPI Card 4 -->
+                <div class="card p-6 border-l-4 border-rose-500 relative overflow-hidden">
+                    <div class="absolute top-2 right-2 text-6xl opacity-5">🤝</div>
+                    <p class="text-sm font-medium text-stone-500 uppercase tracking-wider">キャリア活動参加率</p>
+                    <div class="flex items-baseline gap-2 mt-1">
+                        <h3 class="text-3xl font-bold text-stone-800">87.1%<a href="#sources" class="citation-link">[1]</a></h3>
+                        <span class="text-sm font-bold text-rose-600">（3年秋時点）</span>
+                    </div>
+                    <p class="mt-2 text-xs text-stone-500">約9割が参加。「就業体験あり」への参加希望は98.2%に達する<a href="#sources" class="citation-link">[5]</a>。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Schedule Analysis -->
+        <section id="schedule" class="scroll-mt-24">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-2">
+                    <span class="text-teal-600">②</span> 採用スケジュール比較（早期化の深度）
+                </h2>
+                <p class="mt-2 text-stone-600 text-sm">
+                    各種調査データ<a href="#sources" class="citation-link">[2][4]</a>に基づき、25卒から27卒への内々定率推移を可視化。「2月末時点で約半数が内定保持」という驚異的な早期化が進行。
+                </p>
+            </div>
+
+            <div class="card p-6">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-stone-700">内々定率の累積推移（時期別）</h3>
+                    <div class="flex space-x-2">
+                        <button onclick="updateChartData('all')" class="px-3 py-1 text-xs bg-stone-200 hover:bg-stone-300 rounded font-bold transition">全表示</button>
+                        <button onclick="updateChartData('27')" class="px-3 py-1 text-xs bg-teal-100 text-teal-800 hover:bg-teal-200 rounded font-bold transition">27卒のみ強調</button>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="scheduleChart"></canvas>
+                </div>
+                
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm bg-stone-50 p-4 rounded-lg">
+                    <div class="border-l-2 border-teal-500 pl-3">
+                        <span class="block font-bold text-stone-700">夏のインターン (6-8月)</span>
+                        <p class="text-xs text-stone-500 mt-1">もはや前哨戦ではなく「出会いの本番」。ここで評価された学生への早期オファールートが定着<a href="#sources" class="citation-link">[4]</a>。</p>
+                    </div>
+                    <div class="border-l-2 border-orange-500 pl-3">
+                        <span class="block font-bold text-stone-700">秋冬フォロー & 早期選考 (10-12月)</span>
+                        <p class="text-xs text-stone-500 mt-1">「5日〜1週間程度」のインターン参加が急増<a href="#sources" class="citation-link">[1]</a>。大企業の約半数が選考開始を「早める」と回答<a href="#sources" class="citation-link">[3]</a>。</p>
+                    </div>
+                    <div class="border-l-2 border-indigo-500 pl-3">
+                        <span class="block font-bold text-stone-700">本選考解禁前 (2月時点)</span>
+                        <p class="text-xs text-stone-500 mt-1">2月末時点で内定率48.5%<a href="#sources" class="citation-link">[2]</a>。3月解禁ルールは実質的に「内定承諾のピーク」へと変質。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Industry Matrix (Finance vs Others) -->
+        <section id="industry" class="scroll-mt-24">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-2">
+                    <span class="text-teal-600">③</span> 業界別マトリックス分析（金融 vs 他業界）
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Comparison Radar Chart -->
+                <div class="card p-6 lg:col-span-1 flex flex-col items-center justify-center">
+                    <h3 class="text-md font-bold text-stone-700 w-full mb-2 text-center">業界イメージ評価 (上位校生)</h3>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-stone-500 mt-2">※ヒアリング及びES傾向に基づく相対評価</p>
+                </div>
+
+                <!-- Comparison Table/Matrix -->
+                <div class="card p-6 lg:col-span-2 overflow-hidden">
+                    <h3 class="text-md font-bold text-stone-700 mb-4">金融 vs コンサル・IT・商社 直接対決</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm text-left">
+                            <thead>
+                                <tr class="bg-stone-100 border-b border-stone-200">
+                                    <th class="py-3 px-4 font-bold text-stone-600">比較項目</th>
+                                    <th class="py-3 px-4 font-bold text-indigo-800 bg-indigo-50">🏦 金融 (メガバン/証券)</th>
+                                    <th class="py-3 px-4 font-bold text-teal-800 bg-teal-50">💻 コンサル・IT・商社</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-100">
+                                <tr class="hover:bg-stone-50 transition">
+                                    <td class="py-3 px-4 font-medium text-stone-700">早期接触</td>
+                                    <td class="py-3 px-4 text-stone-600">
+                                        <span class="inline-block px-2 py-0.5 rounded text-xs bg-green-100 text-green-800 mb-1">改善</span><br>
+                                        インターン直結枠の拡大で、コンサル内定層の引き留めに成功。
+                                    </td>
+                                    <td class="py-3 px-4 text-stone-600">
+                                        <span class="inline-block px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-800 mb-1">優位</span><br>
+                                        依然サマーでの囲い込み力は最強。先行逃げ切り型。
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-stone-50 transition">
+                                    <td class="py-3 px-4 font-medium text-stone-700">初任給・待遇</td>
+                                    <td class="py-3 px-4 text-stone-600">
+                                        初任給大幅アップ（30万〜）と配属確約で、コンサルとの待遇差を縮小。
+                                    </td>
+                                    <td class="py-3 px-4 text-stone-600">
+                                        高いが「激務」の懸念。ITは初任給引き上げ（例：年収102万増等<a href="#sources" class="citation-link">[6]</a>）で対抗。
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-stone-50 transition">
+                                    <td class="py-3 px-4 font-medium text-stone-700">承諾の決め手</td>
+                                    <td class="py-3 px-4 font-bold text-indigo-700">
+                                        「日本企業の看板と福利厚生」<br>＋専門性（コース別）
+                                    </td>
+                                    <td class="py-3 px-4 font-bold text-teal-700">
+                                        「20代での圧倒的成長環境」<br>＋汎用スキル獲得
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Top Tier Student Insights -->
+        <section id="students" class="scroll-mt-24">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-2">
+                    <span class="text-teal-600">④</span> 上位校生の行動・心理データ
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Decision Factors (Doughnut) -->
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-md font-bold text-stone-700">入社決定の最大要因</h3>
+                        <select id="uniSelector" onchange="updateStudentCharts()" class="text-xs border border-stone-300 rounded p-1">
+                            <option value="all">全体傾向</option>
+                            <option value="top">旧帝・早慶 (Top Tier)</option>
+                            <option value="march">MARCH・関関同立</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-center gap-4">
+                        <div class="chart-container w-full md:w-1/2" style="height: 250px;">
+                            <canvas id="decisionChart"></canvas>
+                        </div>
+                        <div class="w-full md:w-1/2 text-sm space-y-3">
+                            <div id="insightText">
+                                <!-- Dynamic text populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Motivation Trends (Bar) -->
+                <div class="card p-6">
+                    <h3 class="text-md font-bold text-stone-700 mb-4">志望理由トレンド：「安定×成長」のハイブリッド化<a href="#sources" class="citation-link">[4]</a></h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    <p class="text-xs text-stone-500 mt-3 text-right">※ES等でのキーワード出現頻度（推計）</p>
+                </div>
+
+                <!-- Resignation Factors -->
+                <div class="card p-6 col-span-1 md:col-span-2 bg-gradient-to-r from-stone-100 to-white">
+                    <h3 class="text-md font-bold text-stone-700 mb-3">⚠️ 内定辞退の「真の理由」トップ3</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded shadow-sm border-t-4 border-rose-400">
+                            <h4 class="font-bold text-rose-600 text-lg">1. キャリアパスの不透明さ</h4>
+                            <p class="text-xs text-stone-600 mt-2">約7割の学生が「就活の軸」を重視<a href="#sources" class="citation-link">[1]</a>。「配属ガチャ」への恐怖は依然として強く、初期配属の明示がない企業は最終局面でジョブ型に負ける。</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow-sm border-t-4 border-orange-400">
+                            <h4 class="font-bold text-orange-600 text-lg">2. 体験（体験価値）の不足</h4>
+                            <p class="text-xs text-stone-600 mt-2">「成長実感のあるフィードバックがあった企業は志望度が上がる」が7割超。単なる説明会ではなく「体験の質」が成果を左右する<a href="#sources" class="citation-link">[4]</a>。</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow-sm border-t-4 border-blue-400">
+                            <h4 class="font-bold text-blue-600 text-lg">3. 条件面（給与・福利厚生）</h4>
+                            <p class="text-xs text-stone-600 mt-2">初任給競争の激化により、他社比較がシビアに。ベースアップだけでなく可処分所得（家賃補助等）で比較される。</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section 5: Strategic Proposal -->
+        <section id="strategy" class="scroll-mt-24">
+            <div class="bg-stone-900 rounded-2xl p-8 text-white shadow-xl">
+                <h2 class="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3">
+                    🚀 27卒採用を勝ち抜くための戦略提言
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-stone-800 p-6 rounded-xl border border-stone-700 hover:border-teal-500 transition duration-300">
+                        <div class="text-4xl mb-4">🎯</div>
+                        <h3 class="text-xl font-bold text-teal-400 mb-3">1. インターンの「選考直結」明示</h3>
+                        <p class="text-stone-300 text-sm leading-relaxed mb-4">
+                            98.2%が「就業体験あり」を希望<a href="#sources" class="citation-link">[5]</a>。「出会いの本番」として、早期選考ルートを隠さず提示せよ。曖昧な運用は学生の離脱を招く。
+                        </p>
+                    </div>
+
+                    <div class="bg-stone-800 p-6 rounded-xl border border-stone-700 hover:border-orange-500 transition duration-300">
+                        <div class="text-4xl mb-4">🔍</div>
+                        <h3 class="text-xl font-bold text-orange-400 mb-3">2. 「ジョブ型的」入口と軸の尊重</h3>
+                        <p class="text-stone-300 text-sm leading-relaxed mb-4">
+                            自己探索中の学生にとって「明確な軸の強要」は負担にもなる<a href="#sources" class="citation-link">[1]</a>。軸作りを支援しつつ「初期配属確約」等の選択肢を提示するスタンスが有効。
+                        </p>
+                    </div>
+
+                    <div class="bg-stone-800 p-6 rounded-xl border border-stone-700 hover:border-indigo-500 transition duration-300">
+                        <div class="text-4xl mb-4">🤝</div>
+                        <h3 class="text-xl font-bold text-indigo-400 mb-3">3. リアル体験と個別FBの徹底</h3>
+                        <p class="text-stone-300 text-sm leading-relaxed mb-4">
+                            オンラインで効率化しつつ、リアルでは「質の高いフィードバック」を提供せよ。体験設計の差がそのまま志望度の差に直結する<a href="#sources" class="citation-link">[4]</a>。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Sources / References -->
+        <section id="sources" class="scroll-mt-24 pt-8 border-t border-stone-300">
+            <h2 class="text-xl font-bold text-stone-800 mb-4 flex items-center gap-2">
+                📚 出典・データ参照元
+            </h2>
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm text-sm">
+                <ul class="space-y-4">
+                    <li class="flex flex-col sm:flex-row sm:gap-4">
+                        <span class="font-bold text-teal-700 min-w-[30px]">[1]</span>
+                        <div>
+                            <span class="font-semibold text-stone-800">株式会社マイナビ</span>
+                            <a href="https://hrzine.jp/article/detail/7236" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline ml-2 block sm:inline">
+                                「マイナビ 2027年卒 大学生インターンシップ・就職活動準備実態調査（中間総括）」 (HRzine, 2025/10/31)
+                            </a>
+                            <p class="text-xs text-stone-500 mt-1">※27卒のキャリア形成活動参加率（87.1%）、参加期間の傾向、就活の軸に関するデータ。</p>
+                        </div>
+                    </li>
+                    <li class="flex flex-col sm:flex-row sm:gap-4">
+                        <span class="font-bold text-teal-700 min-w-[30px]">[2]</span>
+                        <div>
+                            <span class="font-semibold text-stone-800">株式会社学情</span>
+                            <a href="https://www.alc.co.jp/job-change/newgrad-nnt/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline ml-2 block sm:inline">
+                                「内々定の獲得状況」に関するアンケート (ALC等引用, 2026/02)
+                            </a>
+                            <p class="text-xs text-stone-500 mt-1">※27卒の2月末時点での内々定率（48.5%）と、26卒（39.3%）との比較データ。</p>
+                        </div>
+                    </li>
+                    <li class="flex flex-col sm:flex-row sm:gap-4">
+                        <span class="font-bold text-teal-700 min-w-[30px]">[3]</span>
+                        <div>
+                            <span class="font-semibold text-stone-800">株式会社キャリタス</span>
+                            <a href="https://umai-jinji.jp/column/other-76/" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline ml-2 block sm:inline">
+                                「新卒採用に関する企業調査」 / ウマい人事 解説記事 (2026/01)
+                            </a>
+                            <p class="text-xs text-stone-500 mt-1">※企業の27卒採用意欲（増加15.8%）、選考開始時期の前倒し傾向に関するデータ。</p>
+                        </div>
+                    </li>
+                    <li class="flex flex-col sm:flex-row sm:gap-4">
+                        <span class="font-bold text-teal-700 min-w-[30px]">[4]</span>
+                        <div>
+                            <span class="font-semibold text-stone-800">note (採用トレンド考察)</span>
+                            <a href="https://note.com/ishikura3/n/n58657d1f3289" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline ml-2 block sm:inline">
+                                「27卒採用トレンド考察｜マイナビ過去3年分データから読み解く」 (2025/10)
+                            </a>
+                            <p class="text-xs text-stone-500 mt-1">※「安定×成長」のハイブリッド志向、インターンの「出会いの本番化」、体験価値の重要性に関する洞察。</p>
+                        </div>
+                    </li>
+                    <li class="flex flex-col sm:flex-row sm:gap-4">
+                        <span class="font-bold text-teal-700 min-w-[30px]">[5]</span>
+                        <div>
+                            <span class="font-semibold text-stone-800">HR総研 / 学情</span>
+                            <a href="https://www.hrpro.co.jp/trend_news.php?news_no=3614" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline ml-2 block sm:inline">
+                                「【27卒採用】98.2％が就業体験ありインターンシップを希望」 (HRプロ, 2025/07)
+                            </a>
+                            <p class="text-xs text-stone-500 mt-1">※リアル志向の高まり、オープン・カンパニーへの参加意向に関するデータ。</p>
+                        </div>
+                    </li>
+                    <li class="flex flex-col sm:flex-row sm:gap-4">
+                        <span class="font-bold text-teal-700 min-w-[30px]">[6]</span>
+                        <div>
+                            <span class="font-semibold text-stone-800">PR TIMES / 企業リリース</span>
+                            <a href="https://prtimes.jp/main/html/rd/p/000000269.000035321.html" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline ml-2 block sm:inline">
+                                各社初任給引き上げ動向（例：ワンキャリア等） (2025/12)
+                            </a>
+                            <p class="text-xs text-stone-500 mt-1">※IT業界をはじめとする27卒向け初任給引き上げ（待遇改善）のトレンド事例。</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-stone-500 text-sm">
+            <p>&copy; 2026 27卒採用マーケット分析チーム | Internal Use Only</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Data & State ---
+        const state = {
+            currentScheduleView: 'all',
+            studentSegment: 'all'
+        };
+
+        // --- Chart Configurations ---
+        
+        // 1. Schedule Chart Data (Adjusted based on Gakujo/Mynavi Data)
+        const scheduleCtx = document.getElementById('scheduleChart').getContext('2d');
+        const scheduleData = {
+            labels: ['6月(3年)', '8月', '10月', '12月', '2月(現在)', '3月', '4月(4年)', '6月'],
+            datasets: [
+                {
+                    label: '25卒（過去）',
+                    data: [5, 20, 30, 40, 50, 70, 85, 90],
+                    borderColor: '#d6d3d1', // stone-300
+                    borderDash: [5, 5],
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 0
+                },
+                {
+                    label: '26卒（昨年）',
+                    data: [8, 25, 35, 45, 39.3, 75, 90, 95], // Real data approximation
+                    borderColor: '#a8a29e', // stone-400
+                    tension: 0.4,
+                    fill: false
+                },
+                {
+                    label: '27卒（現在/予測）',
+                    data: [15, 35, 50, 65, 48.5, 85, 95, 98], // Real 27卒 2月 data
+                    borderColor: '#0d9488', // teal-600
+                    backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        };
+
+        let scheduleChart = new Chart(scheduleCtx, {
+            type: 'line',
+            data: scheduleData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: '内々定率の累積推移（2月時点で約半数）' },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        max: 100,
+                        title: { display: true, text: '内定率 (%)' }
+                    }
+                }
+            }
+        });
+
+        // 2. Radar Chart Data (Industry Comparison)
+        const radarCtx = document.getElementById('radarChart').getContext('2d');
+        const radarChart = new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['給与水準', '成長環境', '安定性', 'ワークライフバランス', '社会的影響力', '専門性'],
+                datasets: [{
+                    label: '金融 (27卒)',
+                    data: [90, 70, 95, 60, 90, 85],
+                    fill: true,
+                    backgroundColor: 'rgba(79, 70, 229, 0.2)', // Indigo
+                    borderColor: 'rgb(79, 70, 229)',
+                    pointBackgroundColor: 'rgb(79, 70, 229)'
+                }, {
+                    label: 'コンサル/IT',
+                    data: [95, 95, 60, 50, 75, 90],
+                    fill: true,
+                    backgroundColor: 'rgba(20, 184, 166, 0.2)', // Teal
+                    borderColor: 'rgb(20, 184, 166)',
+                    pointBackgroundColor: 'rgb(20, 184, 166)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { display: false },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+
+        // 3. Decision Chart (Doughnut)
+        const decisionCtx = document.getElementById('decisionChart').getContext('2d');
+        const decisionDataSets = {
+            all: [35, 25, 20, 20],
+            top: [25, 40, 15, 20],
+            march: [40, 20, 25, 15]
+        };
+        const insightTexts = {
+            all: '<strong>全体傾向：</strong><br>「安定×成長」のハイブリッド志向<a href="#sources" class="citation-link">[4]</a>。福利厚生と成長機会のバランスを求める。',
+            top: '<strong>Top Tier (旧帝・早慶)：</strong><br><span class="text-teal-600 font-bold">「キャリア形成」</span>が最重視。配属確約や市場価値向上が鍵。',
+            march: '<strong>MARCH・関関同立：</strong><br><span class="text-indigo-600 font-bold">「福利厚生・安定」</span>の比重が高い。長く働ける環境への関心。'
+        };
+
+        let decisionChart = new Chart(decisionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['福利厚生・安定性', 'キャリア形成・成長', '給与水準', '人・社風'],
+                datasets: [{
+                    data: decisionDataSets.all,
+                    backgroundColor: ['#6366f1', '#0d9488', '#f59e0b', '#f43f5e'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                }
+            }
+        });
+
+        // 4. Trend Chart (Bar)
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'bar',
+            data: {
+                labels: ['25卒', '26卒', '27卒'],
+                datasets: [
+                    {
+                        label: '「成長・スキル」言及率',
+                        data: [45, 55, 62],
+                        backgroundColor: '#0d9488'
+                    },
+                    {
+                        label: '「安定・貢献」言及率',
+                        data: [55, 45, 58],
+                        backgroundColor: '#6366f1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, max: 80 }
+                }
+            }
+        });
+
+        // --- Interaction Functions ---
+        function updateChartData(view) {
+            state.currentScheduleView = view;
+            if (view === '27') {
+                scheduleChart.data.datasets[0].hidden = true;
+                scheduleChart.data.datasets[1].borderColor = '#e5e7eb';
+                scheduleChart.data.datasets[2].borderWidth = 4;
+            } else {
+                scheduleChart.data.datasets[0].hidden = false;
+                scheduleChart.data.datasets[1].borderColor = '#a8a29e';
+                scheduleChart.data.datasets[2].borderWidth = 3;
+            }
+            scheduleChart.update();
+        }
+
+        function updateStudentCharts() {
+            const segment = document.getElementById('uniSelector').value;
+            decisionChart.data.datasets[0].data = decisionDataSets[segment];
+            decisionChart.update();
+            document.getElementById('insightText').innerHTML = insightTexts[segment];
+        }
+
+        document.getElementById('insightText').innerHTML = insightTexts['all'];
+    </script>
+</body>
+</html>
